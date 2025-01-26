@@ -6,6 +6,8 @@ import { getBotConfig, startBot, stopBot } from "@/services/api";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { eventService } from "@/services/events";
+import { Skeleton } from "@/components/ui/skeleton"; // Add this import
+
 interface ConsoleMessage {
   timestamp: string;
   text: string;
@@ -15,6 +17,7 @@ interface ConsoleMessage {
 export default function Bot() {
   const [isStarting, setIsStarting] = useState(false);
   const [isStopping, setIsStopping] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { id } = useParams();
   if (!id) {
@@ -35,16 +38,19 @@ export default function Bot() {
     if (!username || !id) {
       return;
     }
+    setIsLoading(true);
 
-    // Fetch initial bot config
     getBotConfig(username, id)
       .then((data) => {
         setBotConfig(data);
       })
       .catch((error) => {
         toast.error(`Error: ${error.message}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, [id, username]); // Changed dependency
+  }, [id, username]);
 
   const startWebSocket = () => {
     wsRef.current = new WebSocket(`ws://0.0.0.0:8000/bot/bots`);
@@ -203,7 +209,7 @@ export default function Bot() {
             ref={consoleRef}
             className="bg-primary-foreground p-4 rounded-lg h-full font-mono overflow-y-auto text-left relative"
           >
-            {messages.length === 0 ? (
+            {messages.length === 0 && !isLoading ? (
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-muted text-xl font-extrabold font-sans">
                 Logs will appear here. Start the bot to see
               </div>
