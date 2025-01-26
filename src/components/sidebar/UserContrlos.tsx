@@ -8,9 +8,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenuButton, SidebarMenu, SidebarMenuItem } from "./ui/sidebar";
-import { useAuth } from "../context/AuthContext";
-import { ModeToggle } from "./ui/theme";
+import {
+  SidebarMenuButton,
+  SidebarMenu,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { useAuth } from "@/context/AuthContext";
+import { ModeToggle } from "@/components/ui/theme";
 
 export default function UserControls() {
   const { logout, username } = useAuth();

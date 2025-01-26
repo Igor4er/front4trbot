@@ -40,7 +40,7 @@ export function CollapsibleConfigSection({
             {configs.map((config) => (
               <SidebarMenuSubButton key={config.id} asChild>
                 <Link
-                  to={`/bot/${config.id}`}
+                  to={`/bots/${config.id}`}
                   className="flex items-center gap-2"
                 >
                   <Circle

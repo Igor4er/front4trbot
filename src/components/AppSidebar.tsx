@@ -1,6 +1,6 @@
 import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import UserControls from "./UserContrlos";
+import UserControls from "@/components/sidebar/UserContrlos";
 import { ConfigsGroup } from "./sidebar/ConfigsGroup";
 import {
   Sidebar,

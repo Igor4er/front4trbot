@@ -158,7 +158,8 @@ export default function Bot() {
       <div className="flex gap-8 w-full h-[80vh]">
         <div className="flex-1 p-4 flex flex-col">
           <div className="text-2xl font-bold mb-4">
-            {botConfig && `${botConfig.SYMBOL}/USDT ${botConfig.INTERVAL}`}
+            {botConfig &&
+              `${botConfig.SYMBOL.replace("USDT", "/USDT")} ${botConfig.INTERVAL}`}
           </div>
 
           {botConfig && (
@@ -203,7 +204,7 @@ export default function Bot() {
             className="bg-primary-foreground p-4 rounded-lg h-full font-mono overflow-y-auto text-left relative"
           >
             {messages.length === 0 ? (
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-muted-foreground text-xl">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-muted text-xl font-extrabold font-sans">
                 Logs will appear here. Start the bot to see
               </div>
             ) : (

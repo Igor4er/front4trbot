@@ -19,16 +19,37 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   // Move state and hooks inside the component
   const [inputUsername, setInputUsername] = useState("");
-  const { login } = useAuth();
+  const { login, username } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputUsername.trim()) {
+    if (inputUsername.trim() && !username) {
       login(inputUsername);
       navigate("/"); // Redirect to home page after login
     }
   };
+
+  if (username) {
+    return (
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Already Logged In</CardTitle>
+            <CardDescription>
+              You are already logged in as{" "}
+              <span className="italic font-semibold">{username}</span>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate("/")} className="w-full">
+              Go to Home
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -51,6 +72,7 @@ export function LoginForm({
                   required
                   value={inputUsername}
                   onChange={(e) => setInputUsername(e.target.value)}
+                  autoComplete="off"
                 />
               </div>
             </div>

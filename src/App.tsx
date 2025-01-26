@@ -7,6 +7,8 @@ import Login from "./pages/Login";
 import Layout from "./layout";
 import AddConfig from "./pages/AddConfig";
 import Bot from "./pages/Bot";
+import Bots from "./pages/Bots";
+import Config from "./pages/Config";
 
 export default function App() {
   return (
@@ -23,8 +25,10 @@ export default function App() {
               }
             >
               <Route path="/" element={<Home />} />
-              <Route path="/add-config" element={<AddConfig />} />
-              <Route path="/bot/:id" element={<Bot />} />
+              <Route path="/config" element={<Config />} />
+              <Route path="/config/add" element={<AddConfig />} />
+              <Route path="/bots" element={<Bots />} />
+              <Route path="/bots/:id" element={<Bot />} />
             </Route>
           </Routes>
         </BrowserRouter>

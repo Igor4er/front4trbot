@@ -63,7 +63,7 @@ export function ConfigsGroup() {
             </Alert>
           )}
           <SidebarMenuButton asChild className="font-bold">
-            <Link to="/add-config">
+            <Link to="/config/add">
               <PlusIcon className="" />
               Add Config
             </Link>

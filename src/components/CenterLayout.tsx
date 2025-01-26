@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home } from "lucide-react";
+import Breadcrumbs from "./Breadcrumbs";
 
 interface CenterLayoutProps {
   children: React.ReactNode;
@@ -27,7 +28,7 @@ const CenterLayout: React.FC<CenterLayoutProps> = ({
       {showMainPageButton && (
         <div className="sticky top-0 left-0 p-4 bg-background z-10">
           <Button onClick={() => navigate("/")} variant="outline">
-            <Home /> Main page
+            <Home /> Home page
           </Button>
         </div>
       )}
@@ -35,6 +36,8 @@ const CenterLayout: React.FC<CenterLayoutProps> = ({
       <div className="flex-1 flex items-center justify-center p-6 md:p-10 w-full text-center">
         {children}
       </div>
+
+      <Breadcrumbs />
     </div>
   );
 };
