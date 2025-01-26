@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { getBotConfig, startBot, stopBot } from "@/services/api";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
-
+import { eventService } from "@/services/events";
 interface ConsoleMessage {
   timestamp: string;
   text: string;
@@ -13,6 +13,9 @@ interface ConsoleMessage {
 }
 
 export default function Bot() {
+  const [isStarting, setIsStarting] = useState(false);
+  const [isStopping, setIsStopping] = useState(false);
+
   const { id } = useParams();
   if (!id) {
     throw new Error("Bot ID is required");
@@ -30,7 +33,6 @@ export default function Bot() {
 
   useEffect(() => {
     if (!username || !id) {
-      toast("No userName or botId provided!");
       return;
     }
 
@@ -40,7 +42,7 @@ export default function Bot() {
         setBotConfig(data);
       })
       .catch((error) => {
-        alert(`Error: ${error.message}`);
+        toast.error(`Error: ${error.message}`);
       });
   }, [id, username]); // Changed dependency
 
@@ -48,12 +50,21 @@ export default function Bot() {
     wsRef.current = new WebSocket(`ws://0.0.0.0:8000/bot/bots`);
 
     wsRef.current.onopen = () => {
+      toast.success("Bot started!");
+      setTimeout(() => {
+        eventService.emit("configsUpdated");
+        toast("Configs list updated");
+      }, 5000);
       console.log("WebSocket connected");
       wsRef.current?.send("{}");
     };
 
     wsRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      console.log(data);
+      // if (typeof data.message === "object") {
+      //   data.message = null;
+      // }
       if (data.message) {
         const text =
           typeof data.message.data === "string"
@@ -76,6 +87,9 @@ export default function Bot() {
         const colorCode = colorMatch ? parseInt(colorMatch[1]) : null;
         const colorClass = colorMap[colorCode || 37];
 
+        const timestamp = new Date(data.timestamp * 1000).toLocaleTimeString();
+        data.timestamp = timestamp;
+
         setMessages((prev) => [
           ...prev,
           {
@@ -84,9 +98,8 @@ export default function Bot() {
             color: colorClass,
           },
         ]);
-
-        wsRef.current?.send("{}");
       }
+      wsRef.current?.send("{}");
     };
 
     wsRef.current.onerror = (error) => {
@@ -100,24 +113,33 @@ export default function Bot() {
 
   const handleStart = async () => {
     try {
+      setIsStarting(true);
       await startBot(id, username);
       startWebSocket();
     } catch (error) {
-      toast(`Error starting bot: ${error}`);
+      toast.error(`Error starting bot: ${error}`);
+    } finally {
+      setIsStarting(false);
     }
   };
 
   const handleStop = async () => {
     try {
+      setIsStopping(true);
       await stopBot(id, username);
       wsRef.current?.close();
+      eventService.emit("configsUpdated");
+      toast.success("Bot stopped");
     } catch (error) {
-      toast(`Error stopping bot: ${error}`);
+      toast.error(`Error stopping bot: ${error}`);
+    } finally {
+      setIsStopping(false);
     }
   };
 
   const handleClearLogs = () => {
     setMessages([]);
+    toast("Logs cleared");
   };
 
   // Auto-scroll console
@@ -126,6 +148,10 @@ export default function Bot() {
       consoleRef.current.scrollTop = consoleRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    document.title = `Bot#${id} | Trading bot`;
+  }, []);
 
   return (
     <CenterLayout showBackButton={false} showMainPageButton={true}>
@@ -151,16 +177,18 @@ export default function Bot() {
               variant="outline"
               className="bg-green-500 hover:bg-green-600 text-white"
               onClick={handleStart}
+              disabled={isStarting || isStopping} // Disable while either operation is in progress
             >
-              Start
+              {isStarting ? "Starting..." : "Start"}
             </Button>
 
             <Button
               variant="outline"
               className="bg-red-500 hover:bg-red-600 text-white"
               onClick={handleStop}
+              disabled={isStarting || isStopping} // Disable while either operation is in progress
             >
-              Stop
+              {isStopping ? "Stopping..." : "Stop"}
             </Button>
 
             <Button variant="outline" onClick={handleClearLogs}>
@@ -172,15 +200,61 @@ export default function Bot() {
         <div className="flex-1 p-4">
           <div
             ref={consoleRef}
-            className="bg-primary-foreground p-4 rounded-lg h-full font-mono overflow-y-auto text-left"
+            className="bg-primary-foreground p-4 rounded-lg h-full font-mono overflow-y-auto text-left relative"
           >
-            {messages.map((msg, index) => (
-              <div key={index} className="whitespace-pre-wrap">
-                <span>{msg.timestamp}: </span>
-                <span className={msg.color}>{msg.text}</span>
+            {messages.length === 0 ? (
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-muted-foreground text-xl">
+                Logs will appear here. Start the bot to see
               </div>
-            ))}
+            ) : (
+              messages.map((msg, index) => (
+                <div key={index} className="whitespace-pre-wrap">
+                  <span>{msg.timestamp}: </span>
+                  <span className={msg.color}>{msg.text}</span>
+                </div>
+              ))
+            )}
           </div>
+          {messages.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mt-2 text-xs"
+              onClick={() => {
+                // Create log content
+                const logContent = messages
+                  .map((msg) => `${msg.timestamp}: ${msg.text}`)
+                  .join("\n");
+
+                // Create filename with current timestamp
+                const now = new Date();
+                const filename = `${now.getDate().toString().padStart(2, "0")}${(
+                  now.getMonth() + 1
+                )
+                  .toString()
+                  .padStart(2, "0")}${now
+                  .getFullYear()
+                  .toString()
+                  .slice(-2)}${now.getHours().toString().padStart(2, "0")}${now
+                  .getMinutes()
+                  .toString()
+                  .padStart(2, "0")}_trbot.log`;
+
+                // Create and trigger download
+                const blob = new Blob([logContent], { type: "text/plain" });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+              }}
+            >
+              Download Logs
+            </Button>
+          )}
         </div>
       </div>
     </CenterLayout>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchConfigs, Bot } from "@/services/api";
 import { useAuth } from "../../context/AuthContext";
-import { CableIcon } from "lucide-react";
+import { CableIcon, Repeat } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   SidebarGroup,
@@ -30,6 +30,7 @@ export function ConfigsGroup() {
       const bots = config.bots;
       setActiveConfigs(bots.filter((config) => config.running));
       setStoppedConfigs(bots.filter((config) => !config.running));
+      setError(false);
     } catch (error) {
       console.error("Error loading configs:", error);
       setError(true);
@@ -66,6 +67,10 @@ export function ConfigsGroup() {
               <PlusIcon className="" />
               Add Config
             </Link>
+          </SidebarMenuButton>
+          <SidebarMenuButton onClick={loadConfigs}>
+            <Repeat className="" />
+            Reload Configs
           </SidebarMenuButton>
           <SidebarSeparator />
           <CollapsibleConfigSection
