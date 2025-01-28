@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchConfigs, Bot } from "@/services/api";
 import { useAuth } from "../../context/AuthContext";
-import { CableIcon, Repeat } from "lucide-react";
+import { CableIcon, Repeat, SearchX } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   SidebarGroup,
@@ -56,7 +56,7 @@ export function ConfigsGroup() {
         <SidebarMenu>
           {error && (
             <Alert variant="destructive">
-              <CableIcon className="" />
+              <CableIcon />
               <AlertDescription>
                 Failed to fetch configs. Check console
               </AlertDescription>
@@ -73,24 +73,40 @@ export function ConfigsGroup() {
             Reload Configs
           </SidebarMenuButton>
           <SidebarSeparator />
-          <CollapsibleConfigSection
-            title="Active"
-            defaultOpen={true}
-            configs={activeConfigs}
-            isLoading={isLoading}
-          />
-          <CollapsibleConfigSection
-            title="Stopped"
-            defaultOpen={true}
-            configs={stoppedConfigs}
-            isLoading={isLoading}
-          />
-          <CollapsibleConfigSection
-            title="All"
-            defaultOpen={false}
-            configs={[...activeConfigs, ...stoppedConfigs]}
-            isLoading={isLoading}
-          />
+          {/* Only show sections if there are configs */}
+          {(activeConfigs.length > 0 || stoppedConfigs.length > 0) && (
+            <>
+              <CollapsibleConfigSection
+                title="Active"
+                defaultOpen={true}
+                configs={activeConfigs}
+                isLoading={isLoading}
+              />
+              <CollapsibleConfigSection
+                title="Stopped"
+                defaultOpen={true}
+                configs={stoppedConfigs}
+                isLoading={isLoading}
+              />
+              <CollapsibleConfigSection
+                title="All"
+                defaultOpen={false}
+                configs={[...activeConfigs, ...stoppedConfigs]}
+                isLoading={isLoading}
+              />
+            </>
+          )}
+          {!error &&
+            !isLoading &&
+            activeConfigs.length === 0 &&
+            stoppedConfigs.length === 0 && (
+              <Alert className="mt-1" variant="destructive">
+                <SearchX />
+                <AlertDescription className="ml-2">
+                  No configs found. Try creating one
+                </AlertDescription>
+              </Alert>
+            )}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

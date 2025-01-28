@@ -109,12 +109,15 @@ export default function AddConfig() {
     setIsSubmitting(true);
     try {
       const result = await createConfig(values);
-      toast.success(result.message);
+      toast.success("Config created successfully");
       eventService.emit("configsUpdated");
-      navigate("/");
+      // Navigate to the bot detail page using the returned ID
+      navigate(`/bots/${result.id}`);
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Error creating config");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 

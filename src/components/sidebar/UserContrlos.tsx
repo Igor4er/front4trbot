@@ -1,11 +1,9 @@
-import { ChevronDown, LogOutIcon, User } from "lucide-react";
+import { ChevronDown, LogOutIcon, User, Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -15,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { ModeToggle } from "@/components/ui/theme";
+import { Link } from "react-router-dom";
 
 export default function UserControls() {
   const { logout, username } = useAuth();
@@ -43,6 +42,12 @@ export default function UserControls() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
+            <Link to="/settings">
+              <DropdownMenuItem>
+                <Settings />
+                Settings
+              </DropdownMenuItem>
+            </Link>
             <ModeToggle />
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>

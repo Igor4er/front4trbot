@@ -9,6 +9,8 @@ import AddConfig from "./pages/AddConfig";
 import Bot from "./pages/Bot";
 import Bots from "./pages/Bots";
 import Config from "./pages/Config";
+import Settings from "./pages/Settings";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function App() {
   return (
@@ -26,6 +28,7 @@ export default function App() {
             >
               <Route path="/" element={<Home />} />
               <Route path="/config" element={<Config />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="/config/add" element={<AddConfig />} />
               <Route path="/bots" element={<Bots />} />
               <Route path="/bots/:id" element={<Bot />} />
@@ -33,6 +36,7 @@ export default function App() {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
+      <Toaster />
     </ThemeProvider>
   );
 }

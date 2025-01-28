@@ -20,9 +20,9 @@ const Breadcrumbs = () => {
     // Always add Home as the first item
     breadcrumbItems.push(
       <BreadcrumbItem key="home">
-        <Link to="/">
-          <BreadcrumbLink>Home</BreadcrumbLink>
-        </Link>
+        <BreadcrumbLink asChild>
+          <Link to="/">Home</Link>
+        </BreadcrumbLink>
       </BreadcrumbItem>,
     );
 
@@ -43,9 +43,9 @@ const Breadcrumbs = () => {
 
       breadcrumbItems.push(
         <BreadcrumbItem key={path}>
-          <Link to={path}>
-            <BreadcrumbLink>{formattedSegment}</BreadcrumbLink>
-          </Link>
+          <BreadcrumbLink asChild>
+            <Link to={path}>{formattedSegment}</Link>
+          </BreadcrumbLink>
         </BreadcrumbItem>,
       );
 
