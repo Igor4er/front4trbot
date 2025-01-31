@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM gcr.io/distroless/static-debian12
+FROM gcr.io/distroless/static-debian12:nonroot
 LABEL docker.restart-policy="unless-stopped"
 
 COPY --from=build /app/dist /usr/share/nginx/html
