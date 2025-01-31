@@ -57,7 +57,7 @@ const formSchema = z
 
 const selectOptions = {
   symbols: ["BTCUSDT", "ETHUSDT", "XRPUSDT", "BNBUSDT", "SOLUSDT", "LINKUSDT"],
-  intervals: ["1min", "5min", "10min", "15min", "30min"],
+  intervals: ["1m", "5m", "10m", "15m", "30m"],
   marginTypes: ["ISOLATED", "CROSSED"],
   balanceTypes: ["BTC", "USDT"],
 };
