@@ -27,7 +27,7 @@ export default function LoginForm({
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { login, isAuth, username } = useAuth();
+  const { login, isAuth } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,7 +39,7 @@ export default function LoginForm({
       password: "",
     });
 
-    if (formData.username.trim() && formData.password.trim() && !username) {
+    if (formData.username.trim() && formData.password.trim() && !isAuth) {
       try {
         setIsLoading(true);
         await login(formData.username, formData.password);

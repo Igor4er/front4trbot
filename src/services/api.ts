@@ -47,6 +47,10 @@ export interface SettingsPresence {
   has_secret_key: boolean;
 }
 
+export interface CreateConfigResponse {
+  id: string;
+}
+
 export async function fetchConfigs(userName: string): Promise<Config> {
   try {
     const response = await fetch(`${baseURL}/bot/all?USERNAME=${userName}`, {
@@ -67,7 +71,7 @@ export async function fetchConfigs(userName: string): Promise<Config> {
 
 export async function createConfig(
   configData: CreateConfigData,
-): Promise<{ message: string }> {
+): Promise<CreateConfigResponse> {
   try {
     const response = await fetch(`${baseURL}/bot/create_config`, {
       method: "POST",

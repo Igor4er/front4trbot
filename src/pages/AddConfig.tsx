@@ -243,10 +243,8 @@ export default function AddConfig() {
               </div>
             ))}
 
-            {["tp_11", "tp_21", "tp_22", "tp_32"].map((field, idx) => (
+            {["tp_11", "tp_21", "tp_22", "tp_32"].map((field) => (
               <div key={field}>
-                {" "}
-                {/* Add this wrapper div with a key */}
                 {renderInputField({
                   name: field as keyof z.infer<typeof formSchema>,
                   label: `TP ${field.replace("_", " ")}`,

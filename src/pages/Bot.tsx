@@ -6,7 +6,6 @@ import { getBotConfig, startBot, stopBot } from "@/services/api";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { eventService } from "@/services/events";
-import { Skeleton } from "@/components/ui/skeleton"; // Add this import
 
 interface ConsoleMessage {
   timestamp: string;

@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 import { eventService } from "@/services/events";
@@ -30,7 +29,7 @@ export default function SignUpForm({
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { signup, isAuth, username } = useAuth();
+  const { signup } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
