@@ -8,6 +8,7 @@ RUN npm run build
 
 # Production stage
 FROM nginx:alpine-slim
+LABEL docker.restart-policy="unless-stopped"
 RUN addgroup -g 1001 appgroup && \
     adduser -u 1001 -G appgroup -D appuser
 USER appuser
