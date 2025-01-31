@@ -57,7 +57,7 @@ const formSchema = z
 
 const selectOptions = {
   symbols: ["BTCUSDT", "ETHUSDT", "XRPUSDT", "BNBUSDT", "SOLUSDT", "LINKUSDT"],
-  intervals: ["1m", "5m", "10m", "15m", "30m"],
+  intervals: ["1m", "5m", "15m", "30m"],
   marginTypes: ["ISOLATED", "CROSSED"],
   balanceTypes: ["BTC", "USDT"],
 };
@@ -85,7 +85,7 @@ export default function AddConfig() {
   const defaultValues: z.infer<typeof formSchema> = {
     username: username ? username : "",
     symbol: "BTCUSDT",
-    interval: "1min",
+    interval: "1m",
     min_impulse_percent: 0.01,
     margin_type: "ISOLATED",
     leverage: 10,
