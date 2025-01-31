@@ -7,11 +7,9 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM nginx:alpine-slim
+FROM gcr.io/distroless/static-debian12
 LABEL docker.restart-policy="unless-stopped"
-RUN addgroup -g 1001 appgroup && \
-    adduser -u 1001 -G appgroup -D appuser
-USER appuser
+
 COPY --from=build /app/dist /usr/share/nginx/html
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
