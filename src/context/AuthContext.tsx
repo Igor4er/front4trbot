@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface AuthContextType {
   username: string | null;
@@ -6,7 +12,12 @@ interface AuthContextType {
   isAuth: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
-  signup: (username: string, password: string) => Promise<void>; // Add this line
+  signup: (username: string, password: string) => Promise<void>;
+}
+
+interface AuthResponse {
+  token: string;
+  expire: number; // Unix timestamp for token expiration
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -21,11 +32,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const [isAuth, setIsAuth] = useState<boolean>(() => {
-    // Check if both username and token exist in localStorage
+    const storedExpire = localStorage.getItem("tokenExpire");
+    if (!storedExpire) return false;
+
+    const now = Math.floor(Date.now() / 1000); // Current time in seconds
     return !!(
-      localStorage.getItem("username") && localStorage.getItem("token")
+      localStorage.getItem("username") &&
+      localStorage.getItem("token") &&
+      now < parseInt(storedExpire)
     );
   });
+
+  const checkTokenExpiration = () => {
+    const storedExpire = localStorage.getItem("tokenExpire");
+    if (!storedExpire) return;
+
+    const now = Math.floor(Date.now() / 1000); // Current time in seconds
+    if (now >= parseInt(storedExpire)) {
+      logout();
+    }
+  };
+
+  // Check token expiration periodically
+  useEffect(() => {
+    const intervalId = setInterval(checkTokenExpiration, 5000); // Check every second
+    return () => clearInterval(intervalId);
+  }, []);
 
   const login = async (username: string, password: string) => {
     try {
@@ -44,14 +76,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("Authentication failed");
       }
 
-      const data = await response.json();
-      const { token } = data;
+      const data: AuthResponse = await response.json();
+      const { token, expire } = data;
 
       setUsername(username);
       setToken(token);
       setIsAuth(true);
       localStorage.setItem("username", username);
       localStorage.setItem("token", token);
+      localStorage.setItem("tokenExpire", expire.toString());
     } catch (error) {
       console.error("Login error:", error);
       throw error;
@@ -64,6 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuth(false);
     localStorage.removeItem("username");
     localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpire");
   };
 
   const signup = async (username: string, password: string) => {
