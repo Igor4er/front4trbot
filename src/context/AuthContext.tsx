@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Check token expiration periodically
   useEffect(() => {
-    const intervalId = setInterval(checkTokenExpiration, 5000); // Check every second
+    const intervalId = setInterval(checkTokenExpiration, 30000);
     return () => clearInterval(intervalId);
   }, []);
 
