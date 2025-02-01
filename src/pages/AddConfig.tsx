@@ -169,7 +169,20 @@ export default function AddConfig() {
           <FormLabel className="w-1/3 text-right">{label}</FormLabel>
           <div className="w-2/3">
             <FormControl>
-              <Input type={type} min={min} max={max} step={step} {...field} />
+              <Input
+                type={type}
+                min={min}
+                max={max}
+                step={step}
+                {...field}
+                onChange={(e) => {
+                  // Convert string to number for number inputs
+                  const value =
+                    e.target.value === "" ? "" : Number(e.target.value);
+                  field.onChange(value);
+                }}
+                value={field.value}
+              />
             </FormControl>
             <FormMessage />
           </div>
