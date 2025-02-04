@@ -22,13 +22,8 @@ interface AuthResponse {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-if (!import.meta.env.VITE_API_BASE_URL) {
-  throw new Error(
-    "VITE_API_BASE_URL environment variable is required but not defined",
-  );
-}
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || process.env.VITE_API_BASE_URL;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(() => {
