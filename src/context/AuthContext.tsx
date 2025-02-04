@@ -22,6 +22,14 @@ interface AuthResponse {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+if (!import.meta.env.VITE_API_BASE_URL) {
+  throw new Error(
+    "VITE_API_BASE_URL environment variable is required but not defined",
+  );
+}
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(() => {
     return localStorage.getItem("username");
@@ -61,16 +69,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/signin`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ login: username, password }),
+      const response = await fetch(`${API_BASE_URL}/auth/signin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ login: username, password }),
+      });
 
       if (!response.ok) {
         throw new Error("Authentication failed");
@@ -102,16 +107,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signup = async (username: string, password: string) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ login: username, password }),
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ login: username, password }),
+      });
 
       if (!response.ok) {
         throw new Error("Signup failed");
