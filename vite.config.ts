@@ -11,6 +11,10 @@ export default defineConfig(({ mode }) => {
 
   if (!apiBaseUrl) {
     console.error(
+      "process.env.VITE_API_BASE_URL=" + process.env.VITE_API_BASE_URL,
+    );
+    console.error("env.VITE_API_BASE_URL" + env.VITE_API_BASE_URL);
+    console.error(
       "ERROR: VITE_API_BASE_URL must be set either in environment or .env file",
     );
     process.exit(1);
