@@ -13,6 +13,10 @@ interface ConsoleMessage {
   color: string;
 }
 
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL || process.env.VITE_API_BASE_URL;
+const wsURL = baseURL.replace("http", "ws");
+
 export default function Bot() {
   const [isStarting, setIsStarting] = useState(false);
   const [isStopping, setIsStopping] = useState(false);
@@ -52,7 +56,7 @@ export default function Bot() {
   }, [id, username]);
 
   const startWebSocket = () => {
-    wsRef.current = new WebSocket(`ws://0.0.0.0:8000/bot/bots`);
+    wsRef.current = new WebSocket(`${wsURL}/bot/bots`);
 
     wsRef.current.onopen = () => {
       toast.success("Bot started!");
