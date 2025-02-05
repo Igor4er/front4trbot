@@ -226,8 +226,8 @@ export default function Bot() {
             )}
           </div>
           <div>
-            {messages.length > 0 && (
-              <div className="flex gap-2 mt-2">
+            <div className="flex gap-2 mt-2">
+              {messages.length > 0 && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -268,24 +268,24 @@ export default function Bot() {
                 >
                   Download Logs
                 </Button>
+              )}
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs"
-                  onClick={() => {
-                    if (wsRef.current?.readyState === WebSocket.OPEN) {
-                      toast.info("Console is already connected");
-                      return;
-                    }
-                    startWebSocket();
-                    toast.success("Connecting to console...");
-                  }}
-                >
-                  Connect Console
-                </Button>
-              </div>
-            )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs"
+                onClick={() => {
+                  if (wsRef.current?.readyState === WebSocket.OPEN) {
+                    toast.info("Console is already connected");
+                    return;
+                  }
+                  startWebSocket();
+                  toast.success("Connecting to console...");
+                }}
+              >
+                Connect Console
+              </Button>
+            </div>
           </div>
         </div>
       </div>
