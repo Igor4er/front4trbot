@@ -225,46 +225,68 @@ export default function Bot() {
               ))
             )}
           </div>
-          {messages.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-2 text-xs"
-              onClick={() => {
-                // Create log content
-                const logContent = messages
-                  .map((msg) => `${msg.timestamp}: ${msg.text}`)
-                  .join("\n");
+          <div>
+            {messages.length > 0 && (
+              <div className="flex gap-2 mt-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    // Create log content
+                    const logContent = messages
+                      .map((msg) => `${msg.timestamp}: ${msg.text}`)
+                      .join("\n");
 
-                // Create filename with current timestamp
-                const now = new Date();
-                const filename = `${now.getDate().toString().padStart(2, "0")}${(
-                  now.getMonth() + 1
-                )
-                  .toString()
-                  .padStart(2, "0")}${now
-                  .getFullYear()
-                  .toString()
-                  .slice(-2)}${now.getHours().toString().padStart(2, "0")}${now
-                  .getMinutes()
-                  .toString()
-                  .padStart(2, "0")}_trbot.log`;
+                    // Create filename with current timestamp
+                    const now = new Date();
+                    const filename = `${now.getDate().toString().padStart(2, "0")}${(
+                      now.getMonth() + 1
+                    )
+                      .toString()
+                      .padStart(2, "0")}${now
+                      .getFullYear()
+                      .toString()
+                      .slice(
+                        -2,
+                      )}${now.getHours().toString().padStart(2, "0")}${now
+                      .getMinutes()
+                      .toString()
+                      .padStart(2, "0")}_trbot.log`;
 
-                // Create and trigger download
-                const blob = new Blob([logContent], { type: "text/plain" });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-              }}
-            >
-              Download Logs
-            </Button>
-          )}
+                    // Create and trigger download
+                    const blob = new Blob([logContent], { type: "text/plain" });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                  }}
+                >
+                  Download Logs
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => {
+                    if (wsRef.current?.readyState === WebSocket.OPEN) {
+                      toast.info("Console is already connected");
+                      return;
+                    }
+                    startWebSocket();
+                    toast.success("Connecting to console...");
+                  }}
+                >
+                  Connect Console
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </CenterLayout>
