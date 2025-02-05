@@ -56,7 +56,7 @@ export default function Bot() {
   }, [id, username]);
 
   const startWebSocket = () => {
-    wsRef.current = new WebSocket(`${wsURL}/bot/bots`);
+    wsRef.current = new WebSocket(`${wsURL}/bot/bots?id=${id}`);
 
     wsRef.current.onopen = () => {
       toast.success("Bot started!");
