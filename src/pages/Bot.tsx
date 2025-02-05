@@ -65,7 +65,7 @@ export default function Bot() {
         toast("Configs list updated");
       }, 5000);
       console.log("WebSocket connected");
-      wsRef.current?.send("{}");
+      // wsRef.current?.send("{}");
     };
 
     wsRef.current.onmessage = (event) => {
@@ -108,7 +108,7 @@ export default function Bot() {
           },
         ]);
       }
-      wsRef.current?.send("{}");
+      // wsRef.current?.send("{}");
     };
 
     wsRef.current.onerror = (error) => {
